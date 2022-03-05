@@ -70,19 +70,21 @@ async def resizer(client, message):
 
     resized_video = download[::-1].replace(".", f" {requested_height}p."[::-1], 1)[::-1]
 
-    if str(resized_video).endswith('.mp4') or str(resized_video).endswith('.mkv'):
+    if str(resized_video).endswith('.mp4'):
         codec = 'mpeg4'
     elif str(resized_video).endswith('.ogv'):
         codec = 'libvorbis'
     elif str(resized_video).endswith('.webm'):
         codec = 'libvpx'
+    elif str(resized_video).endswith('.mkv'):
+        codec = 'libx264'
     else:
         codec = None
 
     try:
         clip = mp.VideoFileClip(download)
         clip_resized = clip.resize(height=int(requested_height))
-        resized_video = clip_resized.write_videofile(resized_video, codec=codec)
+        clip_resized.write_videofile(resized_video, codec=codec)
 
     except ValueError:
         await bot.send_message(chat_id=message.chat.id,
