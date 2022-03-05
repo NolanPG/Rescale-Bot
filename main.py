@@ -1,5 +1,6 @@
 import moviepy.editor as mp
 from pyrogram import Client, filters
+import moviepy.video.io.ffmpeg_tools as ffmpeg
 
 bot = Client(
     "rescaletestbot",
@@ -32,23 +33,40 @@ async def resizer(client, message):
     replied_message = await bot.get_messages(chat_id=message.chat.id,
                                              reply_to_message_ids=message.message_id)
     requested_height = message.text.replace('/resize ', '')
+    if replied_message.vide is not None:
+        if replied_message.video.file_name is None:
+            if replied_message.video.mime_type == 'video/mp4':
+                extension = '.mp4'
+            elif replied_message.video.mime_type == 'video/x-matroska':
+                extension = '.mkv'
+            elif replied_message.video.mime_type == 'video/x-msvideo':
+                extension = '.avi'
+            else:
+                extension = '.mp4'
 
-    if replied_message.video.file_name is None:
-        if replied_message.video.mime_type == 'video/mp4':
-            extension = '.mp4'
-        elif replied_message.video.mime_type == 'video/x-matroska':
-            extension = '.mkv'
-        elif replied_message.video.mime_type == 'video/x-msvideo':
-            extension = '.avi'
+            video_name = 'video ' + str(replied_message.video.file_unique_id) + extension
+            download = await bot.download_media(message=replied_message.video.file_id,
+                                                file_name=video_name)
         else:
-            extension = '.mp4'
-
-        video_name = 'video ' + str(replied_message.video.date) + extension
-        download = await bot.download_media(message=replied_message.video.file_id,
-                                            file_name=video_name)
+            download = await bot.download_media(message=replied_message.video.file_id,
+                                                file_name=replied_message.video.file_name)
     else:
-        download = await bot.download_media(message=replied_message.video.file_id,
-                                            file_name=replied_message.video.file_name)
+        if replied_message.document.file_name is None:
+            if replied_message.document.mime_type == 'video/mp4':
+                extension = '.mp4'
+            elif replied_message.document.mime_type == 'video/x-matroska':
+                extension = '.mkv'
+            elif replied_message.document.mime_type == 'video/x-msvideo':
+                extension = '.avi'
+            else:
+                extension = '.mp4'
+
+            video_name = 'video ' + str(replied_message.document.file_unique_id) + extension
+            download = await bot.download_media(message=replied_message.video.file_id,
+                                                file_name=video_name)
+        else:
+            download = await bot.download_media(message=replied_message.document.file_id,
+                                                file_name=replied_message.document.file_name)
 
     resized_video = download[::-1].replace(".", f" {requested_height}p."[::-1], 1)[::-1]
 
