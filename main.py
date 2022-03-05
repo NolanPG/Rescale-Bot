@@ -62,7 +62,7 @@ async def resizer(client, message):
                 extension = '.mp4'
 
             video_name = 'video ' + str(replied_message.document.file_unique_id) + extension
-            download = await bot.download_media(message=replied_message.video.file_id,
+            download = await bot.download_media(message=replied_message.document.file_id,
                                                 file_name=video_name)
         else:
             download = await bot.download_media(message=replied_message.document.file_id,
@@ -70,22 +70,18 @@ async def resizer(client, message):
 
     resized_video = download[::-1].replace(".", f" {requested_height}p."[::-1], 1)[::-1]
 
-    if str(resized_video).endswith('.mp4'):
+    if str(resized_video).endswith('.mp4') or str(resized_video).endswith('.mkv'):
         codec = 'mpeg4'
     elif str(resized_video).endswith('.ogv'):
         codec = 'libvorbis'
     elif str(resized_video).endswith('.webm'):
         codec = 'libvpx'
-    elif str(resized_video).endswith('.mkv'):
-        codec = 'libx264'
     else:
         codec = None
 
     try:
         clip = mp.VideoFileClip(download)
         clip_resized = clip.resize(height=int(requested_height))
-        """changing the height (According to moviePy documentation The width is then computed so that the
-        width/height ratio is conserved.)"""
         clip_resized.write_videofile(resized_video, codec=codec)
 
     except ValueError:
