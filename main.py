@@ -1,6 +1,5 @@
 import moviepy.editor as mp
 from pyrogram import Client, filters
-import moviepy.video.io.ffmpeg_tools as ffmpeg
 
 bot = Client(
     "rescaletestbot",
