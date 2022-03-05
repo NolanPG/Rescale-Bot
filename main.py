@@ -1,5 +1,6 @@
 import moviepy.editor as mp
 from pyrogram import Client, filters
+import moviepy.video.io.ffmpeg_tools as ffmpeg
 
 bot = Client(
     "rescaletestbot",
@@ -7,8 +8,10 @@ bot = Client(
 )
 
 #Variables
+size = [360, 640]
 welcome_text_sp = "Bienvenida al bot :v"
 help_text_sp = "Explicación detallada del bot :v"
+
 
 #Functions
 @bot.on_message(filters.command("start"))
@@ -27,19 +30,37 @@ async def helper(client, message):
 
 @bot.on_message(filters.command(["resize"]))
 async def resizer(client, message):
-    requested_height = message.text.replace('/resize ', '')
     replied_message = await bot.get_messages(chat_id=message.chat.id,
                                              reply_to_message_ids=message.message_id)
-    download = await bot.download_media(replied_message.video.file_id,
-                                        replied_message.video.file_name)
+    requested_height = message.text.replace('/resize ', '')
+
+    if replied_message.video.file_name is None:
+        if replied_message.video.mime_type == 'video/mp4':
+            extension = '.mp4'
+        elif replied_message.video.mime_type == 'video/x-matroska':
+            extension = '.mkv'
+        elif replied_message.video.mime_type == 'video/x-msvideo':
+            extension = '.avi'
+        else:
+            extension = '.mp4'
+
+        video_name = 'video ' + str(replied_message.video.date) + extension
+        download = await bot.download_media(message=replied_message.video.file_id,
+                                            file_name=video_name)
+    else:
+        download = await bot.download_media(message=replied_message.video.file_id,
+                                            file_name=replied_message.video.file_name)
+
     resized_video = download[::-1].replace(".", f" {requested_height}p."[::-1], 1)[::-1]
 
-    if resized_video.endswith(".mp4"):
+    if str(resized_video).endswith('.mp4'):
         codec = 'mpeg4'
-    elif resized_video.endswith(".ogv"):
+    elif str(resized_video).endswith('.ogv'):
         codec = 'libvorbis'
-    elif resized_video.endswith(".webm"):
+    elif str(resized_video).endswith('.webm'):
         codec = 'libvpx'
+    elif str(resized_video).endswith('.mkv'):
+        codec = 'libx264'
     else:
         codec = None
 
@@ -50,10 +71,10 @@ async def resizer(client, message):
         width/height ratio is conserved.)"""
         clip_resized.write_videofile(resized_video, codec=codec)
 
-        await bot.send_video(chat_id=message.chat.id, video=resized_video)
-
     except ValueError:
         await bot.send_message(chat_id=message.chat.id,
-                         text='Altura no permitida')
+                               text='Altura no permitida')
+
+    await bot.send_video(chat_id=message.chat.id, video=resized_video)
 
 bot.run()
