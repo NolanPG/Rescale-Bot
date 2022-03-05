@@ -33,7 +33,7 @@ async def resizer(client, message):
     replied_message = await bot.get_messages(chat_id=message.chat.id,
                                              reply_to_message_ids=message.message_id)
     requested_height = message.text.replace('/resize ', '')
-    if replied_message.vide is not None:
+    if replied_message.video is not None:
         if replied_message.video.file_name is None:
             if replied_message.video.mime_type == 'video/mp4':
                 extension = '.mp4'
