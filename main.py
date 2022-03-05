@@ -82,7 +82,7 @@ async def resizer(client, message):
     try:
         clip = mp.VideoFileClip(download)
         clip_resized = clip.resize(height=int(requested_height))
-        clip_resized.write_videofile(resized_video, codec=codec)
+        resized_video = clip_resized.write_videofile(resized_video, codec=codec)
 
     except ValueError:
         await bot.send_message(chat_id=message.chat.id,
