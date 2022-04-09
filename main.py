@@ -1,4 +1,5 @@
-from telethon import TelegramClient, events, utils
+from telethon import TelegramClient, events
+from threading import Thread
 import subprocess
 import pathlib
 
@@ -20,11 +21,17 @@ async def resizer(event):
     extension = pathlib.Path(download).suffix
     resized_video = str(download).replace(extension, f'_{requested_height}p.mp4')
 
-    try:
-        subprocess.run(f'ffmpeg -i {download} -vf scale=-1:{requested_height} -f mp4 {resized_video} -y', shell=True)
-    except Exception as e:
-        print(e)
+    def ffmpeg():
+        try:
+            return subprocess.run(f'ffmpeg -i {download} -vf scale=-1:{requested_height} -f mp4 {resized_video} -y', shell=True)
+        except Exception as e:
+            return e
+
     
+    t = Thread(target=ffmpeg)
+    t.start()
+    t.join()
+
     await bot.send_file(entity=event.chat_id, file=resized_video)
 
 bot.run_until_disconnected()
