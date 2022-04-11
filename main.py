@@ -1,5 +1,6 @@
 from telethon import TelegramClient, events
 from threading import Thread
+from pytube import YouTube
 import subprocess
 import pathlib
 
@@ -53,7 +54,15 @@ async def renamer(event):
 	new_file_path = pathlib.Path(file_path).rename(requested_name+extension)
 	new_file_name = pathlib.Path(new_file_path).name
 	
-	await bot.send_file(entity=event.chat_id, file=new_file_path, caption=f'Renamed file to "{new_file_name}"')
+	await bot.send_file(entity=event.chat_id, file=new_file_path, caption=f'Renamed file to "{new_file_name}{extension}"')
 	
+
+@bot.on(events.NewMessage(pattern='/yt_dl'))
+async def yt_downloader(event):
+	link = event.raw_text.replace('yt_dl ', '')
+	response = await bot.send_message(entity=event.chat_id, message='Downloading...')
+	yt = YouTube(link).streams.get_highest_resolution().download(output_path='/app/')
+	await response.edit('Uploading')
+	await bot.send_file(file=yt, caption=pathlib.Path(yt).name)
 
 bot.run_until_disconnected()
