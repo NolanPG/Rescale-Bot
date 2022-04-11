@@ -10,7 +10,7 @@ bot_token = '5118931943:AAFtqUOmTordsumt0yKerHcVlz-sUjRuCDA'
 bot = TelegramClient('rescaletestbot', api_id, api_hash).start(bot_token=bot_token)
 
 
-@bot.on(events.NewMessage)
+@bot.on(events.NewMessage(pattern='/resize'))
 async def resizer(event):
     replied_message = await event.get_reply_message()
     requested_height = event.raw_text.replace('/resize ', '')
@@ -39,5 +39,21 @@ async def resizer(event):
     
     await bot.delete_messages(entity=event.chat_id, message_ids=response)
     
+    
+@bot.on(events.NewMessage(pattern='/rename'))
+async def renamer(event):
+	requested_name = event.raw_text.replace('/rename ', '')
+	replied_message = await event.get_reply_message()
+	file_name = replied_message.file.name
+	file_path = f'/app/downloads/{file_name}'
+	
+	await bot.download_media(message=replied_message, file=file_path)
+	
+	extension = pathlib.Path(file_path).suffix
+	new_file_path = pathlib.Path(file_path).rename(requested_name+extension)
+	new_file_name = pathlib.Path(new_file_path).name
+	
+	await bot.send_file(entity=event.chat_id, file=new_file_path, caption=f'Renamed file to "{new_file_name}{extension}"')
+	
 
 bot.run_until_disconnected()
