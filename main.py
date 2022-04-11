@@ -28,12 +28,12 @@ async def resizer(event):
         except Exception as e:
             return e
 
-    response.edit('Resizing video...')
+    await response.edit('Resizing video...')
     t = Thread(target=ffmpeg)
     t.start()
     t.join()
 	
-    response.edit('Uploading...')
+    await response.edit('Uploading...')
     
     await bot.send_file(entity=event.chat_id, file=resized_video, caption=f'Finished the resizing of "{resized_video_name}"')
     
