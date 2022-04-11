@@ -53,7 +53,7 @@ async def renamer(event):
 	new_file_path = pathlib.Path(file_path).rename(requested_name+extension)
 	new_file_name = pathlib.Path(new_file_path).name
 	
-	await bot.send_file(entity=event.chat_id, file=new_file_path, caption=f'Renamed file to "{new_file_name}{extension}"')
+	await bot.send_file(entity=event.chat_id, file=new_file_path, caption=f'Renamed file to "{new_file_name}"')
 	
 
 bot.run_until_disconnected()
