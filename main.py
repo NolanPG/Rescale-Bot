@@ -63,6 +63,6 @@ async def yt_downloader(event):
 	response = await bot.send_message(entity=event.chat_id, message='Downloading...')
 	yt = YouTube(link).streams.get_highest_resolution().download(output_path='/app/')
 	await response.edit('Uploading')
-	await bot.send_file(file=yt, caption=pathlib.Path(yt).name)
+	await bot.send_file(entity=event.chat_id, file=yt, caption=pathlib.Path(yt).name)
 
 bot.run_until_disconnected()
