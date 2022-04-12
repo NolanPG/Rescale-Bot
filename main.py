@@ -43,7 +43,7 @@ async def resizer(event):
     
     def ffmpeg():
         try:
-            return subprocess.run(f'ffmpeg -i {download} -vf scale=-1:{requested_height} -f mp4 {resized_video} -y', shell=True, check=False)
+            return subprocess.run(f'ffmpeg -i {download} -vf scale=-1:{requested_height} -f mp4 {resized_video} -y', shell=True)
         except Exception as e:
             return e,
 
