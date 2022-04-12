@@ -22,7 +22,7 @@ async def helper(event):
 
 /rename - Rename a file, e. g. "/rename {wanted name}"
 
-/yt_dl - Download a video from YouTube, it downloads the highest resolution possible, e. g. "/yt_dl {YouTube link}''')
+/yt_dl - Download a video from YouTube, it downloads the highest resolution possible, e. g. "/yt_dl {YouTube link}"''')
 
 
 @bot.on(events.NewMessage(pattern='/resize'))
