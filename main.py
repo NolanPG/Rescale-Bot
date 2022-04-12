@@ -22,7 +22,7 @@ async def helper(event):
 
 /rename - Rename a file, e. g. "/rename {wanted name}"
 
-/yt_dl - Download a video from YouTube, it downloads the highest resolution possible, e. g. "/yt_dl {YouTube link}"''')
+/yt_dl - Download a video from YouTube, it downloads the highest resolution possible, e. g. "/yt_dl {YouTube link}''')
 
 
 @bot.on(events.NewMessage(pattern='/resize'))
@@ -74,7 +74,7 @@ async def renamer(event):
 	new_file_path = pathlib.Path(file_path).rename(requested_name+extension)
 	new_file_name = pathlib.Path(new_file_path).name
 	
-	await bot.send_file(entity=event.chat_id, file=new_file_path, caption=f'Renamed file to "{new_file_name}{extension}"')
+	await bot.send_file(entity=event.chat_id, file=new_file_path, caption=f'Renamed file to "{new_file_name}"')
 	
 
 @bot.on(events.NewMessage(pattern='/yt_dl'))
