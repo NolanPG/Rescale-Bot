@@ -30,7 +30,7 @@ async def resizer(event):
     replied_message = await event.get_reply_message()
     
     requested_height = event.raw_text.replace('/resize ', '')
-    file_name = replied_message.file.name
+    file_name = replied_message.file.name.replace('-', '|')
     file_path = f'/app/downloads/{file_name}'
 	
     response = await bot.send_message(event.chat_id, 'Downloading...')
@@ -38,12 +38,12 @@ async def resizer(event):
     download = await bot.download_media(message=replied_message, file=file_path)
     
     extension = pathlib.Path(download).suffix
-    resized_video = str(download).replace(extension, f'_{requested_height}p.mp4')
+    resized_video = str(download).replace(extension, f' {requested_height}p.mp4')
     resized_video_name = pathlib.Path(resized_video).name
     
     def ffmpeg():
         try:
-            return subprocess.run(f'ffmpeg -i {download} -vf scale=-1:{requested_height} -f mp4 {resized_video} -y', shell=True)
+            return subprocess.run(f'ffmpeg -i {download} -vf scale=-1:{requested_height} -f mp4 {resized_video} -y', shell=True, check=False)
         except Exception as e:
             return e,
 
