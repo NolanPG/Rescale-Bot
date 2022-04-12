@@ -64,17 +64,20 @@ async def renamer(event):
 	requested_name = event.raw_text.replace('/rename ', '')
 	
 	replied_message = await event.get_reply_message()
+	try:
+		file_name = replied_message.file.name
+		file_path = f'/app/downloads/{file_name}'
 	
-	file_name = replied_message.file.name
-	file_path = f'/app/downloads/{file_name}'
+		await bot.download_media(message=replied_message, file=file_path)
 	
-	await bot.download_media(message=replied_message, file=file_path)
+		extension = pathlib.Path(file_path).suffix
+		new_file_path = pathlib.Path(file_path).rename(requested_name+extension)
+		new_file_name = pathlib.Path(new_file_path).name
 	
-	extension = pathlib.Path(file_path).suffix
-	new_file_path = pathlib.Path(file_path).rename(requested_name+extension)
-	new_file_name = pathlib.Path(new_file_path).name
-	
-	await bot.send_file(entity=event.chat_id, file=new_file_path, caption=f'Renamed file to "{new_file_name}"')
+		await bot.send_file(entity=event.chat_id, file=new_file_path, caption=f'Renamed file to "{new_file_name}"')
+		
+	except AttributeError:
+			await bot.send_message(entity=event.chat_id, reply_to=event.message_id,message='To use this command, you must reply to a valid Telegram file')
 	
 
 @bot.on(events.NewMessage(pattern='/yt_dl'))
