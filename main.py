@@ -30,7 +30,7 @@ async def resizer(event):
     replied_message = await event.get_reply_message()
     
     requested_height = event.raw_text.replace('/resize ', '')
-    file_name = replied_message.file.name.replace(')', '\\)').replace('(', '\\(')
+    file_name = replied_message.file.name
     file_path = f'/app/downloads/{file_name}'
 	
     response = await bot.send_message(event.chat_id, 'Downloading...')
