@@ -54,7 +54,7 @@ async def resizer(event):
 	
     await response.edit('Uploading...')
     
-    await bot.send_file(entity=event.chat_id, file=resized_video, caption=f'Finished the resizing of "{resized_video_name}"')
+    await bot.send_file(entity=event.chat_id, file=resized_video, caption=f'Finished the resizing of\n "{resized_video_name}"')
     
     await bot.delete_messages(entity=event.chat_id, message_ids=response)
     
