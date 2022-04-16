@@ -2,7 +2,6 @@ from pyrogram import Client, filters
 from threading import Thread
 from pytube import YouTube
 import subprocess
-import cv2
 import pathlib
 
 
@@ -12,15 +11,16 @@ bot = Client(
 )
 
 async def get_video_duration(url: str):
-    data = await cv2.VideoCapture(url)
-
-    frames = await data.get(cv2.CAP_PROP_FRAME_COUNT)
-    fps = await int(data.get(cv2.CAP_PROP_FPS))
-
-    seconds = await int(frames / fps)
-
-    return seconds
-    
+    result = subprocess.run([
+        'ffprobe', 
+        '-v', 
+        'error', 
+        'show_entries', 
+        'format=duration', 
+        '-of', 
+        'default=noprint_wrappers=1:nokey=1', 
+        url
+        ])
 
 @bot.on_message(filters=filter.command('start'))
 async def welcome(message):
@@ -66,7 +66,21 @@ async def resizer(message):
 
     def ffmpeg():
         try:
-            return subprocess.run(f'ffmpeg -i "{download}" -vf scale=-1:{requested_height} -f mp4 "{resized_video}" -y', shell=True, check=False)
+            return subprocess.run([
+                'ffmpeg', 
+                '-i', 
+                download, 
+                '-vf', 
+                f'scale=-1:{requested_height}', 
+                '-f', 
+                'mp4', 
+                resized_video, 
+                '-y'
+                ], 
+                shell=True, 
+                check=False
+                )
+                
         except Exception as e:
             return e
 
