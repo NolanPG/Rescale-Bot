@@ -8,3 +8,4 @@ pytube==12.0.0
 rsa==4.8
 six==1.16.0
 TgCrypto==1.2.3
+opencv-python==4.5.5.64
