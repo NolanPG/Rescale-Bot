@@ -48,7 +48,7 @@ async def resizer(client, message):
     )
 
     requested_height = message.text.replace('/resize ', '')
-    file_name = replied_message.document.file_name
+    file_name = replied_message.video.file_name
     file_path = f'/app/downloads/{file_name}'
 
     response = await bot.send_message(
@@ -124,7 +124,7 @@ async def renamer(client, message):
             reply_to_message_ids=message.message_id
             )
 
-        file_name = replied_message.document.file_name
+        file_name = replied_message.video.file_name
         file_path = f'/app/downloads/{file_name}'
 
         await bot.download_media(message=replied_message, file_name=file_path)
