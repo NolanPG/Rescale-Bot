@@ -23,7 +23,7 @@ async def get_video_duration(url: str):
         ])
 
 @bot.on_message(filters=filters.command('start'))
-async def welcome(message):
+async def welcome(client, message):
     await bot.send_message(
         chat_id=message.chat.id, 
         text='Hello! I\'m your Telegram Video Toolkit, execute /help to learn how to use me'
@@ -31,7 +31,7 @@ async def welcome(message):
 
 
 @bot.on_message(filters=filters.command('help'))
-async def helper(message):
+async def helper(client, message):
     await bot.send_message(
         chat_id=message.chat.id, 
         text='''/resize - Resize/rescale a video using a given height, the bot automatically calculates the width keeping the aspect ratio, execute it with the format "/resize {height}", e. g. "/resize 360" (replying to the video)
@@ -41,7 +41,7 @@ async def helper(message):
 
 
 @bot.on_message(filters=filters.command('resize'))
-async def resizer(message):
+async def resizer(client, message):
     replied_message = await bot.get_messages(
         chat_id=message.chat.id,
         reply_to_message_ids=message.message_id
@@ -115,7 +115,7 @@ async def resizer(message):
 
 
 @bot.on_message(filters=filters.command('rename'))
-async def renamer(message):
+async def renamer(client, message):
     requested_name = message.text.replace('/rename ', '')
 
     try:
@@ -152,7 +152,7 @@ async def renamer(message):
 
 
 @bot.on_message(filters=filters.command('yt_dl'))
-async def yt_downloader(message):
+async def yt_downloader(client, message):
     link = message.text.replace('/yt_dl ', '')
 
     response = await bot.send_message(
