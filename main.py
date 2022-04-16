@@ -22,7 +22,7 @@ async def get_video_duration(url: str):
         url
         ])
 
-@bot.on_message(filters=filter.command('start'))
+@bot.on_message(filters=filters.command('start'))
 async def welcome(message):
     await bot.send_message(
         chat_id=message.chat.id, 
@@ -30,7 +30,7 @@ async def welcome(message):
         )
 
 
-@bot.on_message(filters=filter.command('help'))
+@bot.on_message(filters=filters.command('help'))
 async def helper(message):
     await bot.send_message(
         chat_id=message.chat.id, 
@@ -40,7 +40,7 @@ async def helper(message):
 )
 
 
-@bot.on_message(filters=filter.command('resize'))
+@bot.on_message(filters=filters.command('resize'))
 async def resizer(message):
     replied_message = await bot.get_messages(
         chat_id=message.chat.id,
@@ -80,7 +80,7 @@ async def resizer(message):
                 shell=True, 
                 check=False
                 )
-                
+
         except Exception as e:
             return e
 
@@ -114,7 +114,7 @@ async def resizer(message):
         )
 
 
-@bot.on_message(filters=filter.command('rename'))
+@bot.on_message(filters=filters.command('rename'))
 async def renamer(message):
     requested_name = message.text.replace('/rename ', '')
 
@@ -151,7 +151,7 @@ async def renamer(message):
             )
 
 
-@bot.on_message(filters=filter.command('yt_dl'))
+@bot.on_message(filters=filters.command('yt_dl'))
 async def yt_downloader(message):
     link = message.text.replace('/yt_dl ', '')
 
