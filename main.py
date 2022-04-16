@@ -2,7 +2,7 @@ from pyrogram import Client, filters
 from threading import Thread
 from pytube import YouTube
 import subprocess
-import cv2 as cv
+import cv2
 import pathlib
 
 
@@ -12,10 +12,10 @@ bot = Client(
 )
 
 async def get_video_duration(url: str):
-    data = await cv.VideoCapture(url)
+    data = await cv2.VideoCapture(url)
 
-    frames = await data.get(cv.CAP_PROP_FRAME_COUNT)
-    fps = await int(data.get(cv.CAP_PROP_FPS))
+    frames = await data.get(cv2.CAP_PROP_FRAME_COUNT)
+    fps = await int(data.get(cv2.CAP_PROP_FPS))
 
     seconds = await int(frames / fps)
 
