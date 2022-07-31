@@ -1,3 +1,5 @@
+import code
+from unicodedata import name
 from pyrogram.errors import MessageNotModified
 from pyrogram import Client, filters
 import datetime
@@ -85,8 +87,8 @@ async def progress_bar(current, total, status_msg, start, msg, filename):
         time_to_complete = round(((total - current) / speed))
         time_to_complete = humanize.naturaldelta(time_to_complete)
         progressbar = "[{0}{1}]".format(
-            "".join(["◼️" for i in range(math.floor(percentage / 10))]),
-            "".join(["◻️" for i in range(10 - math.floor(percentage / 10))]),
+            "".join(["██" for i in range(math.floor(percentage / 10))]),
+            "".join(["░░" for i in range(10 - math.floor(percentage / 10))]),
         )
         current_message = f"""{status_msg} {filename} {round(percentage, 2)}%
 {progressbar}
@@ -98,6 +100,7 @@ async def progress_bar(current, total, status_msg, start, msg, filename):
             await msg.edit_text(current_message)
         except MessageNotModified as e:
             print(e)
+            pass
 
 
 # Message Handlers
@@ -150,7 +153,9 @@ async def resizer(client, message):
     video_duration, duration_errors = await shell_run(
         f'ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "{download}"'
     )
-    video_duration = video_duration.replace('\n', '')
+    print('FIRST' + video_duration)
+    video_duration = video_duration.replace('\n', ' ')
+    print('SECOND' + video_duration)
     video_duration = int(float(video_duration))
 
     await bot.edit_message_text(
@@ -313,7 +318,7 @@ async def encoder(client, message):
         )
 
 
-@bot.on_message(filters=filters.command('props'))
+@bot.on_message(filters=filters.command('info'))
 async def properties(client, message):
 	replied_message = await bot.get_messages(
         chat_id=message.chat.id,
@@ -323,7 +328,7 @@ async def properties(client, message):
 	file_name = getattr(replied_message, replied_message.media).file_name
 	extension = pathlib.Path(file_name).suffix
 	raw_duration = getattr(replied_message, replied_message.media).duration
-	duration = humanize.naturaltime(int(raw_duration))
+	duration = str(datetime.timedelta(seconds = int(raw_duration)))
 	raw_file_size = getattr(replied_message, replied_message.media).file_size
 	file_size = humanize.naturalsize(int(raw_file_size))
 	width = getattr(replied_message, replied_message.media).width
@@ -332,42 +337,14 @@ async def properties(client, message):
 	
 	await bot.send_message(
         chat_id=message.chat.id,
-        text=f'''Properties:
-        	Name: {file_name}
-        	Format: {extension}
-        	Duration: {duration}
-        	Size: {file_size}
-        	Resolution: {resolution}'''
+        text=f'''📋Properties:
+
+🆔Name: {file_name}
+🎬Format: {extension}
+⏰Duration: {duration}
+📦Size: {file_size}
+📏Resolution: {resolution}'''
         )
-	
-
-# @bot.on_message(filters=filters.command('yt_dl'))
-# async def yt_downloader(client, message):
-#     link = message.text.replace('/yt_dl ', '')
-
-#     response = await bot.send_message(
-#         chat_id=message.chat.id,
-#         text='Downloading...'
-#         )
-
-#     yt =
-
-#     await bot.edit_message_text(
-#         chat_id=message.chat.id,
-#         message_id=response.message_id,
-#         text='Uploading...'
-#         )
-
-#     await bot.send_video(
-#         chat_id=message.chat.id,
-#         file=yt,
-#         caption=pathlib.Path(yt).name,
-#         )
-
-#     await bot.delete_messages(
-#         chat_id=message.chat.id,
-#         message_ids=response.message_id
-#         )
 
 
 bot.run()
