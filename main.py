@@ -5,8 +5,8 @@ import datetime
 import humanize
 import asyncio
 import pathlib
+import uvloop
 import time
-import code
 import math
 import os
 
@@ -15,6 +15,10 @@ TOKEN = os.getenv('TOKEN')
 NAME = os.getenv('NAME')
 API_ID = os.getenv('API_ID')
 API_HASH = os.getenv('API_HASH')
+
+# Bot initialization
+
+uvloop.install()
 
 bot = Client(session_name=NAME, bot_token=TOKEN, api_hash=API_HASH, api_id=API_ID)
 
@@ -46,7 +50,7 @@ async def get_thumbnail(video: str):
     duration, duration_error = await shell_run(
         f'ffprobe -v error -show_entries format=duration -of default=noprint_wrappers=1:nokey=1 "{video}"'
     )
-    duration = int(float(duration.replace("\n", "")))
+    duration = int(float(duration.replace("\n", ""))) # Future Nolan, remember always to add https://github.com/jonathanong/heroku-buildpack-ffmpeg-latest.git to the heroku buildpacks (though it will close free dynos before you'd need this comment)
     seconds_raw = duration * 25 / 100
     seconds = int(seconds_raw)
     frame = datetime.timedelta(seconds=seconds)
@@ -100,7 +104,6 @@ async def progress_bar(current, total, status_msg, start, msg, filename):
             await msg.edit_text(current_message)
         except MessageNotModified as e:
             print(e)
-            pass
 
 
 # Message Handlers
