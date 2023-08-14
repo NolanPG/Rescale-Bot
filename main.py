@@ -12,7 +12,6 @@ import os
 
 # Environment Variables
 TOKEN = os.getenv('TOKEN')
-NAME = os.getenv('NAME')
 API_ID = os.getenv('API_ID')
 API_HASH = os.getenv('API_HASH')
 
@@ -20,7 +19,7 @@ API_HASH = os.getenv('API_HASH')
 
 uvloop.install()
 
-bot = Client(session_name=NAME, bot_token=TOKEN, api_hash=API_HASH, api_id=API_ID)
+bot = Client(bot_token=TOKEN, api_hash=API_HASH, api_id=API_ID)
 
 # Functions
 
