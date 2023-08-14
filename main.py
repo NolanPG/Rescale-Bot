@@ -14,12 +14,13 @@ import os
 TOKEN = os.getenv('TOKEN')
 API_ID = os.getenv('API_ID')
 API_HASH = os.getenv('API_HASH')
+NAME = os.getenv('NAME')
 
 # Bot initialization
 
 uvloop.install()
 
-bot = Client(bot_token=TOKEN, api_hash=API_HASH, api_id=API_ID)
+bot = Client(name=NAME, bot_token=TOKEN, api_hash=API_HASH, api_id=API_ID)
 
 # Functions
 
